@@ -163,7 +163,7 @@ Description.TextTransparency = 1
 Description.BackgroundTransparency = 1
 
 local notifCount = 0
-local function Notify(Text)
+function Notify(Text)
     spawn(function()
         local newBack = Background:Clone()
         local newTitle = newBack.Title
