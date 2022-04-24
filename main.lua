@@ -24,7 +24,7 @@ local Services = {
 }
 
 local Player = Services.Players.LocalPlayer
-whiteListed = {}
+whiteListed = {Player.UserId}
 
 local split, sub, len, find, lower, format =
 string.split, string.sub, string.len, string.find, string.lower, string.format
@@ -419,9 +419,6 @@ for _,v in pairs(game:GetService("Players"):GetPlayers()) do
             if v.UserId == x then
                 Passed = true
             end
-        end
-        if v == Player then
-            Passed = true
         end
         if Passed then
             local Split = split(Message, " ")
