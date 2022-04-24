@@ -110,6 +110,21 @@ local function newTween(object, info, goal)
     return Services.TweenService:Create(object,info,goal)
 end
 
+local spoofedProperties = {}
+function spoofProperty(Instance, Property)
+    for _,v in pairs(spoofedProperties) do
+        if not table.find(spoofedProperties, {Instance, Property}) then
+            local oldValue = Instance[Property]
+            local oldIndex = hookmetamethod(game, "__index", function(Self, Key)
+                if Self == Instance and Key == Property then
+                    return oldValue
+                end
+                return oldIndex(Self, Key)
+            end)
+        end
+    end
+end
+
 ---- UI ----
 
 local Notifications = Instance.new("ScreenGui")
@@ -239,7 +254,7 @@ end)
 
 addCommand({"notify"}, "Notifies with text argument.", function(Message, Args)
     if #Args >= 1 then
-        local Text = Message:sub(Prefix:len() + 8)
+        local Text = sub(Message, len(Prefix) + 8)
         return Text
     else
         return "Missing arguments."
@@ -251,7 +266,7 @@ addCommand({"whitelist"}, "Allows a user to use PeaAPI.", function(Message, Args
         local Target = getPlayer(Args[1])
         if Target then
             table.insert(whiteListed, Target.UserId)
-            return string.format("Successfully whitelisted %s!", Target.Name)
+            return format("Successfully whitelisted %s!", Target.Name)
         else
             return "Invalid argument."
         end
@@ -340,7 +355,7 @@ for _,v in pairs(game:GetService("Players"):GetPlayers()) do
                     end
                 end
             end
-            if not Found and Split[1]:sub(1,1) == Prefix then
+            if not Found and sub(Split[1], 1,1) == Prefix then
                 Notify("Command not found!")
             end
         end
