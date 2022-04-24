@@ -19,7 +19,8 @@ local Services = {
     RunService = game:GetService("RunService"),
     ReplicatedStorage = game:GetService("ReplicatedStorage"),
     HttpService = game:GetService("HttpService"),
-    TweenService = game:GetService("TweenService")
+    TweenService = game:GetService("TweenService"),
+    CoreGui = game:GetService("CoreGui")
 }
 
 local Player = Services.Players.LocalPlayer
@@ -134,7 +135,7 @@ local Description = Instance.new("TextLabel")
 local Amount = Instance.new("IntValue")
 
 Notifications.Name = "Notifications"
-Notifications.Parent = game:GetService("CoreGui")
+Notifications.Parent = Services.CoreGui
 Notifications.ZIndexBehavior = Enum.ZIndexBehavior.Sibling
 
 Background.Name = "Background"
@@ -176,6 +177,87 @@ Description.TextSize = 20.000
 Description.TextWrapped = true
 Description.TextTransparency = 1
 Description.BackgroundTransparency = 1
+
+local Commands = Instance.new("ScreenGui")
+local Background2 = Instance.new("Frame")
+local Search = Instance.new("TextBox")
+local List = Instance.new("ScrollingFrame")
+local EXAMPLE = Instance.new("TextLabel")
+local UIGridLayout = Instance.new("UIGridLayout")
+local Close = Instance.new("TextButton")
+
+Commands.Name = "Commands"
+Commands.Parent = Services.CoreGui
+Commands.ZIndexBehavior = Enum.ZIndexBehavior.Sibling
+
+Background2.Name = "Background"
+Background2.Parent = nil
+Background2.BackgroundColor3 = Color3.fromRGB(20, 20, 20)
+Background2.BackgroundTransparency = 0.200
+Background2.BorderSizePixel = 0
+Background2.Position = UDim2.new(0.446289062, 0, 0.373436004, 0)
+Background2.Size = UDim2.new(0.106835939, 0, 0.25303176, 0)
+Background2.Active = true
+Background2.Draggable = true
+
+Search.Name = "Search"
+Search.Parent = Background2
+Search.BackgroundColor3 = Color3.fromRGB(255, 255, 255)
+Search.BackgroundTransparency = 1.000
+Search.Size = UDim2.new(1, 0, 0.100000001, 0)
+Search.Font = Enum.Font.SourceSans
+Search.PlaceholderText = "Search"
+Search.Text = ""
+Search.TextColor3 = Color3.fromRGB(255, 255, 255)
+Search.TextScaled = true
+Search.TextSize = 14.000
+Search.TextWrapped = true
+
+List.Name = "List"
+List.Parent = Background2
+List.Active = true
+List.BackgroundColor3 = Color3.fromRGB(20, 20, 20)
+List.BackgroundTransparency = 0.700
+List.BorderSizePixel = 0
+List.Position = UDim2.new(0.0274223033, 0, 0.106504492, 0)
+List.Size = UDim2.new(0.945155799, 0, 0.87067312, 0)
+
+EXAMPLE.Name = "EXAMPLE"
+EXAMPLE.Parent = List
+EXAMPLE.BackgroundColor3 = Color3.fromRGB(255, 255, 255)
+EXAMPLE.BackgroundTransparency = 1.000
+EXAMPLE.Size = UDim2.new(1, 0, 0.0500000007, 0)
+EXAMPLE.Font = Enum.Font.SourceSansBold
+EXAMPLE.Text = "EXAMPLE"
+EXAMPLE.TextColor3 = Color3.fromRGB(255, 255, 255)
+EXAMPLE.TextScaled = true
+EXAMPLE.TextSize = 14.000
+EXAMPLE.TextWrapped = true
+
+UIGridLayout.Parent = List
+UIGridLayout.SortOrder = Enum.SortOrder.LayoutOrder
+UIGridLayout.CellSize = UDim2.new(1, 0, 0.0500000007, 0)
+
+Close.Name = "Close"
+Close.Parent = Background2
+Close.BackgroundColor3 = Color3.fromRGB(20, 20, 20)
+Close.BackgroundTransparency = 1.000
+Close.BorderSizePixel = 0
+Close.Position = UDim2.new(0.857893586, 0, 0, 0)
+Close.Size = UDim2.new(0.13834174, 0, 0.106504448, 0)
+Close.Font = Enum.Font.SourceSansBold
+Close.Text = "X"
+Close.TextColor3 = Color3.fromRGB(255, 255, 255)
+Close.TextSize = 20.000
+Close.TextWrapped = true
+
+local function openCmds()
+    Background2.Parent = Commands
+end
+
+Close.MouseButton1Down:Connect(function()
+    Background2.Parent = nil
+end)
 
 local notifCount = 0
 function Notify(Text)
@@ -309,17 +391,24 @@ addCommand({"whitelisted"}, "Lists out the whitelisted users.", function(Message
 end)
 
 addCommand({"commands", "cmds"}, "Command meant for testing.", function(Message, Args)
-    local cmdList = ""
-    for _,v in pairs(commandTable) do
-        local Name = v.Names[1]
-        if _ ~= #commandTable then
-            cmdList = cmdList .. Name .. ", "
-        else
-            cmdList = cmdList .. Name
-        end
-    end
-    return cmdList
-end)--make ui soon
+    openCmds()
+    return "Successfully opened commands ui."
+end)
+
+for _,v in pairs(commandTable) do
+    local Name = v.Names[1]
+    local commandLabel = EXAMPLE:Clone()
+    commandLabel.Text = Name
+    commandLabel.Parent = List
+    
+    local UARC = Instance.new("UIAspectRatioConstraint")
+    UARC.Parent = commandLabel
+    UARC.AspectRatio = 7
+end
+
+EXAMPLE:Destroy()
+List.CanvasSize = UDim2.new(0, 0, 0, UIGridLayout.AbsoluteContentSize.Y + 1)
+List.CanvasPosition = Vector2.new(0, UIGridLayout.AbsoluteContentSize.Y)
 
 ---- Post-Core ----
 
